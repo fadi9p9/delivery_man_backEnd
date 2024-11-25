@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('categories', function (Blueprint $table) {
-        $table->id('categoryId');
-        $table->string('title', 100);
-        $table->string('img', 255)->nullable();
+    Schema::create('carts', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('userId')->constrained('users')->onDelete('cascade');
         $table->timestamps();
     });
 }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('carts');
     }
 };

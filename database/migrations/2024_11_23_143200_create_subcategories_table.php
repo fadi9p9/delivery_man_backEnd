@@ -12,13 +12,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('subcategories', function (Blueprint $table) {
-            $table->id('subcategoryId');
+            $table->id(); 
             $table->foreignId('categoryId')->constrained('categories')->onDelete('cascade');
-            $table->string('title', 100);
-            $table->string('img', 255)->nullable();
+            $table->string('name', 100);
             $table->timestamps();
         });
     }
+
+
 
     /**
      * Reverse the migrations.

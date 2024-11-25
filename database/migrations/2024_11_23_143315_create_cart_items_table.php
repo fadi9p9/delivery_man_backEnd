@@ -11,21 +11,21 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('orders', function (Blueprint $table) {
-        $table->id('orderId');
+    Schema::create('cart_items', function (Blueprint $table) {
+        $table->id();
         $table->foreignId('cartId')->constrained('carts')->onDelete('cascade');
-        $table->string('orderLocation', 255)->nullable();
-        $table->foreignId('customerId')->constrained('users')->onDelete('cascade');
-        $table->foreignId('deliveryId')->nullable()->constrained('users')->onDelete('cascade');
+        $table->foreignId('productId')->constrained('products')->onDelete('cascade');
+        $table->integer('quantity')->default(1);
         $table->timestamps();
     });
 }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('cart_items');
     }
 };
