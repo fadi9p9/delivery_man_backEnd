@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -19,18 +20,26 @@ class AuthenticatedSessionController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $request->session()->regenerate();
+        // $user['token'] = $user->createToken('token')->plainTextToken;
 
         return response()->json(['message' => 'Logged in successfully'], 200);
     }
 
+
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        $user = $request->user();
+        if ($user) {
+            // حذف التوكين الحالي
+            $user->currentAccessToken()->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            return response()->json([
+                'message' => 'تم تسجيل الخروج بنجاح.',
+            ], 200);
+        }
 
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        return response()->json([
+            'message' => 'لم يتم العثور على مستخدم مصادق عليه.',
+        ], 401);
     }
 }
