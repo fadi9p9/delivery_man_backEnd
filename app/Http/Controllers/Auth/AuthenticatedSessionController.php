@@ -15,22 +15,34 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request)
-    {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // $user['token'] = $user->createToken('token')->plainTextToken;
-
-        return response()->json(['message' => 'Logged in successfully'], 200);
+{
+    // تحقق من بيانات الاعتماد
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
+    // احصل على المستخدم المصادق عليه
+    $user = Auth::user();
+
+    // أنشئ token جديدًا
+    $token = $user->createToken('token')->plainTextToken;
+
+    // أعد الاستجابة مع الـ token
+    return response()->json([
+        'message' => 'Logged in successfully',
+        'token' => $token,
+        'token_type' => 'Bearer', // اختياري لتمييز نوع المصادقة
+    ], 200);
+}
+        
+        // 'token' => $token,
+        // $token = $user['token'] = Auth::attemptcreateToken('token')->plainTextToken;
 
     public function destroy(Request $request)
     {
         $user = $request->user();
         if ($user) {
-            // حذف التوكين الحالي
+           
             $user->currentAccessToken()->delete();
 
             return response()->json([
